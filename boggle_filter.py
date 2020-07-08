@@ -3,7 +3,6 @@
 import string
 from BoggleGame import DICE, LETTER_MAP, MIN_WORD_LEN, letters
 import argparse
-from functools import partial
 
 
 def word_dfs(word, dice_used=set()):
@@ -54,8 +53,7 @@ def filter_words(words):
     '''Return an iterator over valid Boggle words given a word list'''
     # Strip whitespace, convert "Q"s
     words = (letters(word.strip().upper()) for word in words)
-    filter_fn = partial(can_word_be_formed)
-    return filter(filter_fn, words)
+    return filter(can_word_be_formed, words)
 
 
 if __name__ == '__main__':
