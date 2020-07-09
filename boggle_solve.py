@@ -16,19 +16,22 @@ def get_words_prefix(current_position, game, trie, visited=(), current_word=()):
     # Build word, see if it exists so far
     visited += (current_position,)
     current_word += (die,)
-    prefix = trie.find_prefix(current_word)
-    if prefix is None:
+
+    # In parallel, recurse through the possible board moves and the trie
+    # We could search the trie from the root each time, but that takes N steps
+    subtrie = trie.find_prefix(die)
+    if subtrie is None:
         return
 
     # A word can be a prefix and a valid word so check the "end" flag
-    if prefix.end:
+    if subtrie.end:
         yield current_word, visited
 
     # Try all other words from the current position
     for move in game.valid_moves(*current_position):
         if move in visited:
             continue
-        yield from get_words_prefix(move, game, trie, visited, current_word)
+        yield from get_words_prefix(move, game, subtrie, visited, current_word)
 
 
 def solve_board(game, trie):
